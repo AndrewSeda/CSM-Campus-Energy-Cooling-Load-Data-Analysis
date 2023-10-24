@@ -268,6 +268,22 @@ def interval_average_dataset(list_season_energy, year_selected) -> list:
  
     return list_interval_seperated
 
+def get_use_presets() -> bool:
+    """Gets the desired year to perform analysis on
+
+    Returns:
+        int: _description_
+    """
+    bool_valid = False
+    while(bool_valid == False):
+        choice = int(input("Would You Like to Use Custom or Preset Settings? \n [1] = Custom \n [2] = Preset \n Input: ")) - 1
+        if(choice == 1 or choice == 0):
+            bool_valid = True
+        else:
+            print("Invalid input")
+    
+    return bool(choice)
+
 def get_input_year() -> int:
     """Gets the desired year to perform analysis on
 
@@ -290,6 +306,70 @@ def get_input_year() -> int:
         else:
             print("Invalid input")
     return year_selected
+
+def get_date_range() -> list:
+    """Gets the desired date range to perform analysis on
+
+    Returns:
+        list(int): Returns a 4 element list containing the desired date range in the format:
+        [Starting Month, Ending Month, Starting Day, Ending Day]
+    """
+    list_date_range = []
+    print("Input Desired Date Range: ")
+    bool_valid_input = False
+    while(bool_valid_input == False):
+        for i in range(0,12):
+            print("[",i+1, "] : ",MONTH_NAMES[i])
+        start_month = int(input("Select Starting Month: ")) - 1
+        
+        if(start_month < 12 and start_month >= 0):
+            bool_valid_input = True
+        else:
+            print("Invalid input")
+    
+    bool_valid_input = False
+    while(bool_valid_input == False):
+        for i in range(0,12):
+            print("[",i+1, "] : ",MONTH_NAMES[i])
+        start_day= int(input("Select Starting Date in " + MONTH_NAMES[start_month] + ": ")) - 1
+        
+        if(start_day < DEFAULT_MONTH_DAYS[start_month] and start_day >= 0):
+            bool_valid_input = True
+        else:
+            print("Invalid input")
+
+
+    bool_valid_input = False
+    while(bool_valid_input == False):
+        for i in range(0,12):
+            print("[",i+1, "] : ",MONTH_NAMES[i])
+        end_month = int(input("Select End Month: ")) - 1
+        
+        if(end_month < 12 and end_month >= 0):
+            bool_valid_input = True
+        else:
+            print("Invalid input")
+        
+    
+    bool_valid_input = False
+    while(bool_valid_input == False):
+        for i in range(0,12):
+            print("[",i+1, "] : ",MONTH_NAMES[i])
+        end_day = int(input("Select Ending Date in " + MONTH_NAMES[end_day] + ": ")) - 1
+        
+        if(end_day < DEFAULT_MONTH_DAYS[end_day] and end_day >= 0):
+            bool_valid_input = True
+        else:
+            print("Invalid input")
+    
+   
+
+    list_date_range.append(start_month)
+    list_date_range.append(end_month)
+    list_date_range.append(start_day)
+    list_date_range.append(end_day)
+    return
+    
 
 def get_winter_break():
     bool_valid_input = False
@@ -857,6 +937,7 @@ def season_day_of_the_week_averages(list_season_energy, bool_is_summer, year) ->
 
 def create_day_of_the_week_seperated_interval_average_data(list_day_of_the_week_seperated_data):
     
+    # Does not match season_day_of_the_week_averages
     list_mon_interval_average = interval_average(list_day_of_the_week_seperated_data, 0)
     list_tues_interval_average = interval_average(list_day_of_the_week_seperated_data, 1)
     list_wed_interval_average = interval_average(list_day_of_the_week_seperated_data, 2)

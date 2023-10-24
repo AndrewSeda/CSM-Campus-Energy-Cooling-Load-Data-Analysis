@@ -3,6 +3,7 @@
 #Parameters:
 #Month
 MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
+DEFAULT_MONTH_DAYS = [31,28,31,30,31,30,31,31,30,31,30,31]
 class Year:
     month_days = []
     end_of_year_int = 0
@@ -145,7 +146,7 @@ class Season:
     
     def create_day_array(self):
         season_day_set = []
-        name_set = [] # stores month and day as a set Ex. August 10th is 9/10
+        name_set = [] # Stores month and day as a set Ex. August 10th is 9/10
         interval_set = [] # Stores the interval that begins each day
         int_day_interval = number_of_intervals_to_start_of_month(self.int_first_month, self.year.month_days) + number_of_intervals_to_day(self.int_first_day,15)
     # If the year changes (i.e. December 2019  to January 2020)
@@ -163,7 +164,9 @@ class Season:
                         name_set.append(str_month + "/" + str(day+1))
                         # Begin the set of 15 minute intervals at the number of intervals to the first of the month + the number of intervals to the day of the month
                         interval_set.append(int_day_interval) 
-                        int_day_interval = int_day_interval + INTERVALS_PER_DAY # Go to the interval that begins the next day
+                        # Go to the interval that begins the next day
+                        int_day_interval = int_day_interval + INTERVALS_PER_DAY 
+                # If it is the last month, need to iterate until the designated end date
                 elif int_month == self.int_last_month:
                     for day in range(0,self.int_last_day):
                         name_set.append(str_month + "/" + str(day))
@@ -174,8 +177,10 @@ class Season:
                         name_set.append(str_month + "/" + str(day))
                         interval_set.append(int_day_interval)
                         int_day_interval = int_day_interval + INTERVALS_PER_DAY
-            list_offset_intervals = interval_set # Create a new list to store the list of intervals shifted to start at zero
-            offset = interval_set[0] # The offset of each interval is equal to the offset of the first interval
+            # Create a new list to store the list of intervals shifted to start at zero
+            list_offset_intervals = interval_set 
+            # The offset of each interval is equal to the offset of the first interval
+            offset = interval_set[0] 
 
             for i in range (0,len(list_offset_intervals)):
                 list_offset_intervals[i] = list_offset_intervals[i] - offset
