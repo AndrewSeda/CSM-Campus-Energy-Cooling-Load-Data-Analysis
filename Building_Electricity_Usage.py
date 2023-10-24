@@ -13,6 +13,7 @@ import numpy
 
 #File location: D:\Work\Research\Research Fall 2022\Modified\
 FILE_PATH = "D:\Work\Research\Research Fall 2022\Modified\\"
+OUTPUT_PATH = "D:\Work\Research\Research Fall 2022\Output_Data\\"
 
 dfElecCost = pd.read_excel(FILE_PATH + "Buildings_Electricity_Usage.xlsx", sheet_name= "Electricity cost ($)", na_values="---" )
 dfElecUsage = pd.read_excel(FILE_PATH + "Buildings_Electricity_Usage.xlsx", sheet_name= "Electricity usage (kWh)", na_values="---" )
@@ -110,7 +111,7 @@ dfDorms = dfDorms.transpose()
 #for i in range(0,len(dormArray)):
  #   dormArray = [s.replace("Average", "") for s in dormArray[i]]
 
-writer = pd.ExcelWriter('costPerUsage.xlsx')
+writer = pd.ExcelWriter(OUTPUT_PATH + 'costPerUsage.xlsx')
 #print(dormArray)
 df3.to_excel(writer, sheet_name = "kWh per Dollar")
 dfnew.to_excel(writer, sheet_name ="Dollar per kWh")

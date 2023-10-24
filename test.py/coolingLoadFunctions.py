@@ -473,7 +473,16 @@ def create_radiation_data(data_weather, seasonMonthRange):
     seasonIntervalRange = season_interval_range(seasonMonthRange, year.monthDays)
     radiationSeason = []
     cols = data_weather.columns
-    for i in range(int(seasonIntervalRange[0]/4),int(seasonIntervalRange[1]/4)+1):
-        for b in range(0,5):
-            radiationSeason.append(data_weather.at[i,cols[10]])
+    if(seasonIntervalRange[0] < seasonIntervalRange[1]):
+        for i in range(int(seasonIntervalRange[0]/4),int(seasonIntervalRange[1]/4)+1):
+            for b in range(0,5):
+                radiationSeason.append(data_weather.at[i,cols[10]])
+    else:
+        for i in range(int(seasonIntervalRange[0]/4),int(year.endOfYear/4)):
+            for b in range(0,5):
+                radiationSeason.append(data_weather.at[i,cols[10]])
+        for i in range(0,int(seasonIntervalRange[1]/4)):
+            for b in range(0,5):
+                radiationSeason.append(data_weather.at[i,cols[10]])
+
     return radiationSeason

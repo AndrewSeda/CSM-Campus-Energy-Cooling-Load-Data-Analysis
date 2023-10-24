@@ -16,7 +16,10 @@ os.chdir("D:\Work\Research\Research Fall 2022\Weather\epw Files")
 d = dict()
 dfEpwFiles = {}
 splitTab = False
+# Used To initialize pandas to write the the same file
 writer = pd.ExcelWriter('epwTesting.xlsx')
+# Creates dataframes out of all of the weather files
+# Writes dataframes to excel sheets
 for i in range (13,20):
     print(i)
     fileName = "CO_BROOMFIELD-JEFFCO_724699_" + str(i) + ".epw"
@@ -29,16 +32,18 @@ for i in range (13,20):
     dfEpwFiles[dfName].to_excel(writer, sheet_name= '20' + str(i))
 writer.save()
 close()    
+# Finishes writing files to excel sheet
+
 #Return to main directory
 os.chdir("D:\Work\Research\Research Fall 2022")
-
-
+# File path for the excel data files
 FILE_PATH = "D:\Work\Research\Research Fall 2022\Modified\\"
 #Read excel file
 df = pd.read_excel(FILE_PATH + "Electrical_Power_Demand_2008-2019.xlsx", sheet_name = "Avg Demand (kW) 15min Interval")
-
+# Initializes cols to store all of the column names in df as a list
 cols = df.columns
-#print(cols)
+#rint(type(cols))
+# Ensures the user inputs valid responses
 validInput = False
 while validInput == False:
     inputWinterBreak = str(input("Exclude Winter Break from Data Set? [Y] or [N]: "))
@@ -54,8 +59,8 @@ while validInput == False:
 #Year to analyze data from
 yearSelect = get_input_year()
 #Generates data for each range of months
+# 1 Month, 2 month, 3 month, and 4 month ranges
 for i in range(1,5):
-    
     if i == 1:
         winterRange = [11,0]
         summerRange = [5,6]
@@ -76,6 +81,7 @@ for i in range(1,5):
         summerRange = [5,9]
         combinedSet4, compiledData4, intervalAverageData4, winterData4, summerData4, coolingData4, winterMonthIntervals4, weekIntervalAverageData4 = create_data_sets(summerRange, winterRange, df, yearSelect)
         continue
+# Writes all data to a new excel file
 writerNew = pd.ExcelWriter('coolingLoadNew.xlsx')
 intervalAverageData4.to_excel(writerNew, sheet_name = "Interval Average Data")
 compiledData4.to_excel(writerNew, sheet_name = "Compiled Data")
@@ -85,16 +91,18 @@ coolingData4.to_excel(writerNew, sheet_name = "Cooling Data")
 writerNew.save()
 close()
 
+
 hourTickInterval = []
 hourTick = []
 b = 1
+# Generates an hour count which corresponds to each time interval
 for i in range(0,len(intervalAverageData4[2])):
     if(i%4 == 0):
         hourTickInterval.append(i)
         hourTick.append(b)
         b +=1
 
-
+# Plots the daily average electricity load in 15 minute increments for each season
 plt.figure(1)
 plt.plot(intervalAverageData4)
 plt.xticks(hourTickInterval, hourTick, rotation=45)
@@ -164,7 +172,49 @@ plt.plot(winterData4[yearSelect])
 plt.title("Winter Data over 4 month span")
 plt.xticks(winterIntervals, winterNames, rotation=45)
 
+plt.figure(7)
+#Plot Summer, winter, wooling, and radiation data over 4 month span
+radiationSummerSeason = create_radiation_data(dfEpwFiles[dfName], summerRange)
+radiationWinterSeason = create_radiation_data(dfEpwFiles[dfName], winterRange)
+dfRadiationSummerSeason = pd.DataFrame(radiationSummerSeason)
+dfRadiationWinterSeason = pd.DataFrame(radiationWinterSeason)
+#print(type(compiledData4), " and ", type(dfRadiationSeason))
+#newData = pd.concat([compiledData4[0], dfRadiationSummerSeason])
+#plt.plot(dfRadiationSummerSeason, label = "Radiation")
+#plt.plot(compiledData4[0], label = "Summer Electrical Load")
+#plt.legend = ["Summer", "Winter" , "Average"]
+#axNew = axTest.twinx()
+#axNew.plot(radiationSeason, color = 'r')
+figure7, ax7 = plt.subplots()
+color = 'tab:blue'
+ax7.set_xlabel('Month')
+ax7.set_ylabel('kWh', color = color)
+ax7.plot(dfRadiationSummerSeason, label = "Radiation", color = color)
+ax7twin = ax7.twinx()
+color = 'tab:red'
 
+ax7twin.set_ylabel('W/m^2', color = color)
+ax7twin.plot(compiledData4[0], label = "Summer Electrical Load", color=color)
+plt.xticks(winterMonthIntervals4, combinedSet4, rotation=45)
+plt.legend()
+plt.title("Summer Electrical Load Relative to Solar Radiation")
+
+#plt.figure(8)
+figure8, ax8 = plt.subplots()
+color = 'tab:blue'
+ax8.set_xlabel('Month')
+ax8.set_ylabel('kWh', color = color)
+ax8.plot(dfRadiationWinterSeason, label = "Radiation", color = color)
+ax8twin = ax8.twinx()
+color = 'tab:red'
+
+ax8twin.set_ylabel('W/m^2', color = color)
+ax8twin.plot(compiledData4[1], label = "Winter Electrical Load", color=color)
+#plt.plot(dfRadiationWinterSeason, label = "Radiation")
+#plt.plot(compiledData4[1], label = "Winter Electrical Load")
+plt.legend()
+plt.title("Winter Electrical Load Relative to Solar Radiation")
+plt.xticks(winterMonthIntervals4, combinedSet4, rotation=45)
 
 
 #Plot cooling load, temperature, and radiation hourly data
@@ -199,17 +249,6 @@ axes[0].set_xlabel('Time of Day (Hour)')
 ax.set_title("2017 Average Cooling Load Compared to Temperaturand Solar Radiation")
 
 
-
-#Plot Summer, winter, wooling, and radiation data over 4 month span
-radiationSeason = create_radiation_data(dfEpwFiles[dfName], summerRange)
-dfRadiationSeason = pd.DataFrame(radiationSeason)
-print(type(compiledData4), " and ", type(dfRadiationSeason))
-newData = pd.concat([compiledData4, dfRadiationSeason])
-axTest = compiledData4.plot()
-plt.legend = ["Summer", "Winter" , "Average"]
-axNew = axTest.twinx()
-axNew.plot(radiationSeason, color = 'r')
-plt.xticks(winterMonthIntervals4, combinedSet4, rotation=45)
 
 
 
