@@ -18,79 +18,6 @@ class Year:
         self.end_of_year_int = number_of_intervals_to_start_of_month(11, self.month_days) + number_of_intervals_to_day(31, 15)
         return
 
-
-        
-    
-def number_of_days_to_month(months: list, month_days: list) -> int:
-    """Returns the number of days before the specified month
-
-    Args:
-        months (int): The number of months before the target month (Ex: 3 for April)
-        month_days (int list): A list containing the number of days in each month
-
-    Returns:
-        int: Total number of days before specified month
-    """
-    
-    
-    days = sum(month_days[i] for i in range(0,months))
-    return int(days)
-
-def number_of_intervals_to_day(day: int, minute_interval: list) -> int:
-    """Calculates the interval index corresponding to the desired day
-
-    Args:
-        day (int): The day to  convert to an interval
-        minute_interval (int): The number of minutes per interval
-
-    Returns:
-        int: The interval index for the input day
-    """
-    multiplier = 24*60/minute_interval
-    starting_interval = multiplier*day
-    return int(starting_interval)
-
-def number_of_intervals_to_start_of_month(month: int, month_days: list) -> int:
-    """Finds the number of days to the start of a month
-
-    Args:
-        month (int): The month to find the number of intervals before
-        month_days (int list): The number of days in each month
-
-    Returns:
-       Int: The interval index corresponding to the first day in the month
-    """
-    month_starting_day = number_of_days_to_month(month, month_days)
-    month_starting_interval = number_of_intervals_to_day(month_starting_day,15)
-    return month_starting_interval
-
-INTERVALS_PER_DAY = number_of_intervals_to_day(1,15)  
-
-
-def check_leap(year: int) -> list:
-    """Checks whether the current year is a leap year and adjusts the days per month accordingly
-
-    Args:
-        year (int): The year to check leap for
-
-    Returns:
-        int list: The number of days in each month
-    """    
-    month_days = [31,28,31,30,31,30,31,31,30,31,30,31]
-    if year%4 == 0:
-        Leap = True
-    else:
-         Leap = False
-    if Leap == True:
-        month_days[1] = 29
-    return month_days
-
-
-
-
-
-
-
 class Season:
     #int_first_month = 0
     #int_last_month = 0
@@ -109,16 +36,16 @@ class Season:
 
     def __init__(self) -> None:
         pass
-    def __init__(self, starting_month: int, ending_month: int, starting_day: int, ending_day: int, is_summer: bool, year: Year):
-        self.int_first_month = starting_month
-        self.int_last_month = ending_month
-        self.int_first_day = starting_day
-        self.int_last_day = ending_day
+    def __init__(self, list_date_range: list, is_summer: bool, year: Year):
+        self.int_first_month = list_date_range[0]
+        self.int_last_month = list_date_range[1]
+        self.int_first_day = list_date_range[2]
+        self.int_last_day = list_date_range[3]
         self.year = year
         #Stores a value for the last interval in the year
         self.create_day_array()
         self.bool_summer = is_summer
-        self.list_month_range = [starting_month, ending_month]
+        self.list_month_range = [list_date_range[0], list_date_range[1]]
         self.create_season_set()
         self.season_interval_range()
         return
@@ -273,5 +200,78 @@ class Season:
         self.list_month_names = month_set
         self.list_month_interval = month_intervals
         return 
+
+
+
+        
+    
+def number_of_days_to_month(months: list, month_days: list) -> int:
+    """Returns the number of days before the specified month
+
+    Args:
+        months (int): The number of months before the target month (Ex: 3 for April)
+        month_days (int list): A list containing the number of days in each month
+
+    Returns:
+        int: Total number of days before specified month
+    """
+    
+    
+    days = sum(month_days[i] for i in range(0,months))
+    return int(days)
+
+def number_of_intervals_to_day(day: int, minute_interval: list) -> int:
+    """Calculates the interval index corresponding to the desired day
+
+    Args:
+        day (int): The day to  convert to an interval
+        minute_interval (int): The number of minutes per interval
+
+    Returns:
+        int: The interval index for the input day
+    """
+    multiplier = 24*60/minute_interval
+    starting_interval = multiplier*day
+    return int(starting_interval)
+
+def number_of_intervals_to_start_of_month(month: int, month_days: list) -> int:
+    """Finds the number of days to the start of a month
+
+    Args:
+        month (int): The month to find the number of intervals before
+        month_days (int list): The number of days in each month
+
+    Returns:
+       Int: The interval index corresponding to the first day in the month
+    """
+    month_starting_day = number_of_days_to_month(month, month_days)
+    month_starting_interval = number_of_intervals_to_day(month_starting_day,15)
+    return month_starting_interval
+
+INTERVALS_PER_DAY = number_of_intervals_to_day(1,15)  
+
+
+def check_leap(year: int) -> list:
+    """Checks whether the current year is a leap year and adjusts the days per month accordingly
+
+    Args:
+        year (int): The year to check leap for
+
+    Returns:
+        int list: The number of days in each month
+    """    
+    month_days = [31,28,31,30,31,30,31,31,30,31,30,31]
+    if year%4 == 0:
+        Leap = True
+    else:
+         Leap = False
+    if Leap == True:
+        month_days[1] = 29
+    return month_days
+
+
+
+
+
 
 

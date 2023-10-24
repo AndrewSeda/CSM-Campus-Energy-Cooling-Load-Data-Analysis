@@ -315,7 +315,7 @@ def get_date_range() -> list:
         [Starting Month, Ending Month, Starting Day, Ending Day]
     """
     list_date_range = []
-    print("Input Desired Date Range: ")
+    print("Input Desired Date Range for the Summer Season: ")
     bool_valid_input = False
     while(bool_valid_input == False):
         for i in range(0,12):
