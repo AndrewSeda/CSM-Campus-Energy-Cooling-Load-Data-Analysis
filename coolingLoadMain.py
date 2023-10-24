@@ -13,32 +13,11 @@ import os
 import compareMonthRanges
 from statistics import stdev
 
-#File location: D:\Work\Research\Research Fall 2022\Modified\
-#Change file location to access epw files
-os.chdir("D:\Work\Research\Research Fall 2022\Weather\epw Files")
-df_epw_files = {}
-bool_split_tab = False
-# Used To initialize pandas to write the the same file
-writer = pd.ExcelWriter('epwTesting.xlsx')
-# Creates dataframes out of all of the weather files
-# Writes dataframes to excel sheets
-for i in range (13,20):
-    print(i)
-    file_name = "CO_BROOMFIELD-JEFFCO_724699_" + str(i) + ".epw"
-    df_name = 'df20' + str(i) + 'EpwFile'
-    if i == 14 or i== 18 or i==19:
-        bool_split_tab = False
-    else:
-        bool_split_tab = False
-    df_epw_files[df_name] = Create_df_weather(file_name, bool_split_tab)
-    df_epw_files[df_name].to_excel(writer, sheet_name= '20' + str(i))
-writer.save()
-close()    
-# Finishes writing files to excel sheet
-# All of the weather files are viewable in an excel workbook named epwTesting.xlsx
+#Include the below function if comparing weather
+#process_epw_files()
 
 #Return to main directory
-os.chdir("D:\Work\Research\Research Fall 2022")
+#os.chdir("D:\Work\Research\Research Fall 2022")
 # File path for the excel data files
 FILE_PATH = "D:\Work\Research\Research Fall 2022\Modified\\"
 OUTPUT_PATH = "D:\Work\Research\Research Fall 2022\Output_Data\\"
