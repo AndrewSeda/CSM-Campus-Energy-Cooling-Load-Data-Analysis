@@ -1,21 +1,22 @@
 
+import pandas as pd
+
 #Returns the interval for the first day of summer assuming 15 min intervals
 #Parameters:
 #Month
 MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
 DEFAULT_MONTH_DAYS = [31,28,31,30,31,30,31,31,30,31,30,31]
 class Year:
-    month_days = []
-    end_of_year_int = 0
     def __init__(self) -> None:
         pass
     def __init__(self, year):
+        self.year = year-2008
         if (year%4 == 0):
             self.month_days = [31,29,31,30,31,30,31,31,30,31,30,31]
         else:
             self.month_days = [31,28,31,30,31,30,31,31,30,31,30,31]
         #Stores a value for the last interval in the year
-        self.end_of_year_int = number_of_intervals_to_start_of_month(11, self.month_days) + number_of_intervals_to_day(31, 15)
+        self.int_end_of_year = number_of_intervals_to_start_of_month(11, self.month_days) + number_of_intervals_to_day(31, 15)
         return
 
 class Season:
@@ -200,9 +201,6 @@ class Season:
         self.list_month_names = month_set
         self.list_month_interval = month_intervals
         return 
-
-
-
         
     
 def number_of_days_to_month(months: list, month_days: list) -> int:

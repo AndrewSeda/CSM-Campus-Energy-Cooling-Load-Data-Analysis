@@ -466,7 +466,7 @@ def min_max_average_column(year_data):
     return lowest, highest, average
 
 
-def create_season_energy(season: Season,  df) ->list:
+def create_season_energy(season: Season,  df: pd.DataFrame) ->list:
     """ Creates a 2 dimensional list with each index holding the energy use in Watts of the Mines campus for the given season each year.
         The season is stored in the season object
 
@@ -493,7 +493,7 @@ def create_season_energy(season: Season,  df) ->list:
         # Find the interval range for winter break (Dec 15 to Jan 10)
         break_range_set = break_range(number_of_days_to_month(11, year.month_days)+15,10)
         # Get a single year of seasonal energy data
-        list_season_row = season_energy(season.list_interval_range, year.end_of_year_int, break_range_set, df, i)
+        list_season_row = season_energy(season.list_interval_range, year.int_end_of_year, break_range_set, df, i)
         # Add the single year of seasonal energy data to a list containing all the years of seasonal energy data
         list_season_energy.append(list_season_row)
 
@@ -504,9 +504,7 @@ def create_season_energy(season: Season,  df) ->list:
 def create_cooling_energy(season: Season,  df, list_winter_day_of_week_seperated_interval_average_data: list) ->list:
     """ Creates a 2 dimensional list with each index holding the cooling load in Watts of the Mines campus for the given season each year
 
-    Args:
-        season (Season): A summer season object 
-        df (DataFrame): The dataframe which contains the energy data of the Mines campus in Watts in 15 minute intervals
+    Args:cf the Mines campus in Watts in 15 minute intervals
         list_winter_day_of_week_seperated_interval_average_data (list): A list containing the average energy use at each time of day (in 15 min intervals) for each day of the week
 
     Returns:
@@ -530,7 +528,7 @@ def create_cooling_energy(season: Season,  df, list_winter_day_of_week_seperated
         # Find the interval range for winter break (Dec 15 to Jan 10)
         break_range_set = break_range(number_of_days_to_month(11, year.month_days)+15,10)
         # Get a single year of seasonal energy data
-        list_cooling_row, list_winter_row, list_summer_row = cooling_energy(season.list_interval_range, year.end_of_year_int, break_range_set, df, i, list_winter_day_of_week_seperated_interval_average_data)
+        list_cooling_row, list_winter_row, list_summer_row = cooling_energy(season.list_interval_range, year.int_end_of_year, break_range_set, df, i, list_winter_day_of_week_seperated_interval_average_data)
         # Add the single year of seasonal energy data to a list containing all the years of seasonal energy data
         list_cooling_energy.append(list_cooling_row)
         list_winter_energy.append(list_winter_row)
