@@ -823,14 +823,21 @@ class EnergyProfile:
 
 
         # Writes all data to a new excel file
-        writer_new = pd.ExcelWriter(OUTPUT_PATH + str(2008 + self.summer_season.year.year) + '_Cooling_Load(' + self.summer_season.list_month_names[0] + '-' + self.summer_season.list_month_names[-1] +   ').xlsx')
-        self.df.to_excel(writer_new, sheet_name= "All Data")
-        df_interval_average_data.to_excel(writer_new, sheet_name = "Interval Average Data")
-        df_week_interval_average_data.to_excel(writer_new, sheet_name = "Interval Average Week Data")
-        df_compiled_data.to_excel(writer_new, sheet_name = "Compiled Data")
-        df_winter_data.to_excel(writer_new, sheet_name = "Winter Data")
-        df_summer_data.to_excel(writer_new, sheet_name = "Summer Data")
-        df_cooling_data.to_excel(writer_new, sheet_name = "Cooling Data")
-        df_winter_day_seperated_data.to_excel(writer_new, sheet_name = "Winter Day Seperated Data")
-        writer_new.close()
+        writer = pd.ExcelWriter(OUTPUT_PATH + str(2008 + self.summer_season.year.year) + '_Cooling_Load(' + self.summer_season.list_month_names[0] + '-' + self.summer_season.list_month_names[-1] +   ').xlsx')
+        self.df.to_excel(writer, sheet_name= "All Data")
+        df_interval_average_data.to_excel(writer, sheet_name = "Interval Average Data")
+        df_week_interval_average_data.to_excel(writer, sheet_name = "Interval Average Week Data")
+        df_compiled_data.to_excel(writer, sheet_name = "Compiled Data")
+        df_winter_data.to_excel(writer, sheet_name = "Winter Data")
+        df_summer_data.to_excel(writer, sheet_name = "Summer Data")
+        df_cooling_data.to_excel(writer, sheet_name = "Cooling Data")
+        df_winter_day_seperated_data.to_excel(writer, sheet_name = "Winter Day Seperated Data")
+        
+        
+        list_combined_day_of_the_week_data = [self.summer_day_of_the_week_data[self.summer_season.year.year],self.winter_day_of_the_week_data[self.summer_season.year.year],self.cooling_day_of_the_week_data[self.summer_season.year.year]]
+        df_combined_day_of_the_week_data = pd.DataFrame(list_combined_day_of_the_week_data).transpose()
+        df_combined_day_of_the_week_data.columns = ["Summer", "Winter", "Cooling"]
+        df_combined_day_of_the_week_data.to_excel(writer, sheet_name= str(2008 + self.summer_season.year.year) + " Summer Cooling Load")
+        
+        writer.close()
         

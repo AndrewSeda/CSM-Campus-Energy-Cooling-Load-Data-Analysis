@@ -56,12 +56,6 @@ season_winter_standard = Season([0,2,0,0],False, Year(year_selected + 2008)) # C
 season_summer = Season(date_range, bool_exclude_winter_break, Year(year_selected + 2008)) # Creates a Summer Season based on preset or custom inputs
 energy_summer = EnergyProfile.EnergyProfile(season_summer, season_winter_standard, df)
 
-list_summer_energy_usage = create_season_energy(season_summer, df)
-list_season_winter_standard_energy = create_season_energy(season_winter_standard, df) # Jan 1 - Mar 1 from 2008 to 2019
-list_season_winter_standard_day_of_the_week_average_data = season_day_of_the_week_averages(list_season_winter_standard_energy[year_selected], False, year_selected)
-list_season_winter_standard_day_of_the_week_seperated_interval_average_data = create_day_of_the_week_seperated_interval_average_data(list_season_winter_standard_day_of_the_week_average_data)
-list_cooling_day_of_the_week_data, list_season_winter_standard_day_of_the_week_data, list_summer_day_of_the_week_data = create_cooling_energy(season_summer, df, list_season_winter_standard_day_of_the_week_seperated_interval_average_data)
-
 season_Jun_to_July = Season([6,7,15,15], True, Year(year_selected + 2008))
 season_Aug_to_Sept = Season([8,9,19,20], True, Year(year_selected + 2008))
 season_Dec_to_Jan = Season([11,0,0,0], False, Year(year_selected + 2008))
@@ -71,10 +65,6 @@ energy_Aug_to_Sept = EnergyProfile.EnergyProfile(season_Aug_to_Sept, season_Dec_
 energy_summer.write_data_to_excel()
 
 
-
-
-
-#compareMonthRanges.main(df, year_selected, hour_tick, hour_tick_interval)
 figure_number = 0
 
 
@@ -89,14 +79,7 @@ energy_Aug_to_Sept.plot_energy_use_standard_winter(figure_number)
 figure_number += 1
 energy_Aug_to_Sept.plot_energy_use(figure_number)
 
-writer_senior_design_data = pd.ExcelWriter(OUTPUT_PATH + '2019_Summer_Cooling_Load.xlsx')
-list_combined_day_of_the_week_data = [list_summer_day_of_the_week_data[year_selected],list_season_winter_standard_day_of_the_week_data[year_selected],list_cooling_day_of_the_week_data[year_selected]]
-df_combined_day_of_the_week_data = pd.DataFrame(list_combined_day_of_the_week_data).transpose()
-df_combined_day_of_the_week_data.columns = ["Summer", "Winter", "Cooling"]
-df_combined_day_of_the_week_data.to_excel(writer_senior_design_data, sheet_name= "2019 Summer Cooling Load")
 
-writer_senior_design_data.save()
-close()
 
 '''
 figure_number+=1
