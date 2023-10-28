@@ -1,6 +1,8 @@
 from classes import*
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+from coolingLoadFunctions import interval_average
 
 class EnergyProfile:
     def __init__(self) -> None:
@@ -131,7 +133,7 @@ class EnergyProfile:
             _type_: _description_
         """
 
-        cols = df.columns # Columns store the year from 2008 to 2019
+        cols = self.df.columns # Columns store the year from 2008 to 2019
         
         bool_exclude_time = False
         list_season_row = []
@@ -188,8 +190,6 @@ class EnergyProfile:
         # Not sure what this is for
         if(bool_exclude_time != 0):
             bool_exclude_time = True
-        #print(len(list_winter_day_of_week_seperated_interval_average_data))
-        #print(len(list_winter_day_of_week_seperated_interval_average_data[0]))
         # Check if the year changes between the first and last month i.e. December 2018 to January 2019
         if(list_season_range[0] > list_season_range[1]):
             # Iterate from the start of the season to the end of the year
@@ -230,8 +230,6 @@ class EnergyProfile:
                     
         else:
             for k in range(list_season_range[0],list_season_range[1]):
-                #print(k)
-                #print(k%96)
                 #list_winter_day_of_week_seperated_interval_average_data[k%96]
                 
                 day = 0
@@ -395,8 +393,7 @@ class EnergyProfile:
             list: _description_
         """
         list_cooling_energy=[]
-        
-        #print(len(season_one_energy), "\n")
+
         for i in range(0,12):
             list_year_cooling = []
             #i=b+2008
@@ -464,38 +461,12 @@ class EnergyProfile:
             _type_: _description_
         """
         
-        list_seasonal_interval_average = self.interval_average(list_season_energy, year_selected)
-        list_seasonal_weekday_interval_average = self.interval_average(list_season_energy,  13)
-        list_seasonal_weekend_interval_average = self.interval_average(list_season_energy, 14)
+        list_seasonal_interval_average = interval_average(list_season_energy, year_selected)
+        list_seasonal_weekday_interval_average = interval_average(list_season_energy,  13)
+        list_seasonal_weekend_interval_average = interval_average(list_season_energy, 14)
         return list_seasonal_interval_average, list_seasonal_weekday_interval_average, list_seasonal_weekend_interval_average
     
-    def interval_average(self, list_season_energy, year_selected) -> list:
-        """_summary_
-
-        Args:
-            list_season_energy (_type_): _description_
-            year_selected (_type_): _description_
-
-        Returns:
-            list: _description_
-        """
-        list_interval_average_per_day = []
-        
-        
-        #Loops through all intervals for a 24hour period to construct a list
-        # which contains the data seperated by the day
-        #First loop goes through the first interval of each day
-        # Inner loop goes through all the intervals for the day provied by the first interval
-        
-        for k in range(0,INTERVALS_PER_DAY):
-            season_day_sum = 0
-            season_day_average = 0
-            for i in range(0,len(list_season_energy[year_selected])-INTERVALS_PER_DAY,INTERVALS_PER_DAY):
-                season_day_sum += list_season_energy[year_selected][k+i]
-            season_day_average = season_day_sum/((len(list_season_energy[year_selected])-1)/INTERVALS_PER_DAY)
-            list_interval_average_per_day.append(season_day_average)
-        #print(len(list_interval_average_per_day))
-        return list_interval_average_per_day
+    
 
     
     def get_interval_cooling(self):
@@ -519,7 +490,7 @@ class EnergyProfile:
         return list_cooling_interval_average
     
     def get_day_of_the_week_averages(self):
-        self.winter_day_of_the_week_average_energy_usage = self.season_day_of_the_week_averages(self.winter_energy_usage, self.winter_season.year.year, self.winter_season.bool_summer)
+        self.winter_day_of_the_week_average_energy_usage = self.season_day_of_the_week_averages(self.winter_energy_usage[self.winter_season.year.year], self.winter_season.year.year, self.winter_season.bool_summer)
 
     def season_day_of_the_week_averages(self, list_season_energy, bool_is_summer, year) -> list:
         """_summary_
@@ -664,15 +635,15 @@ class EnergyProfile:
         self.winter_day_of_week_seperated_interval_average_data = self.create_day_of_the_week_seperated_interval_average_data(self.winter_day_of_the_week_average_energy_usage)
 
     def create_day_of_the_week_seperated_interval_average_data(self, list_day_of_the_week_seperated_data):
-        
+
         # Does not match season_day_of_the_week_averages
-        list_mon_interval_average = self.interval_average(list_day_of_the_week_seperated_data, 0)
-        list_tues_interval_average = self.interval_average(list_day_of_the_week_seperated_data, 1)
-        list_wed_interval_average = self.interval_average(list_day_of_the_week_seperated_data, 2)
-        list_thur_interval_average = self.interval_average(list_day_of_the_week_seperated_data, 3)
-        list_fri_interval_average = self.interval_average(list_day_of_the_week_seperated_data, 4)
-        list_sat_interval_average = self.interval_average(list_day_of_the_week_seperated_data, 5)
-        list_sun_interval_average = self.interval_average(list_day_of_the_week_seperated_data, 6)
+        list_mon_interval_average = interval_average(list_day_of_the_week_seperated_data, 0)
+        list_tues_interval_average = interval_average(list_day_of_the_week_seperated_data, 1)
+        list_wed_interval_average = interval_average(list_day_of_the_week_seperated_data, 2)
+        list_thur_interval_average = interval_average(list_day_of_the_week_seperated_data, 3)
+        list_fri_interval_average = interval_average(list_day_of_the_week_seperated_data, 4)
+        list_sat_interval_average = interval_average(list_day_of_the_week_seperated_data, 5)
+        list_sun_interval_average = interval_average(list_day_of_the_week_seperated_data, 6)
 
         list_day_of_week_seperated_interval_average_data = []
         
@@ -683,6 +654,7 @@ class EnergyProfile:
         list_day_of_week_seperated_interval_average_data.append(list_fri_interval_average)
         list_day_of_week_seperated_interval_average_data.append(list_sat_interval_average)
         list_day_of_week_seperated_interval_average_data.append(list_sun_interval_average)
+        #print(list_day_of_week_seperated_interval_average_data)
         return list_day_of_week_seperated_interval_average_data
 
     def create_cooling_data_by_interval(self, starting_day: int):
@@ -798,4 +770,45 @@ class EnergyProfile:
         self.winter_day_of_the_week_data = list_winter_energy
         self.summer_day_of_the_week_data = list_summer_energy
         return 
-                
+    def plot_energy_use_standard_winter(self, figure_number: int):
+        plt.figure(figure_number)
+        plt.plot(self.summer_day_of_the_week_data[self.summer_season.year.year], color = "r")
+        plt.plot(self.winter_day_of_the_week_data[self.summer_season.year.year], color = "b")
+        plt.plot(self.cooling_day_of_the_week_data[self.summer_season.year.year], color = "g")
+        plt.ylim(-1000,7000)
+        plt.ylabel("Energy Use (kWh)")
+        plt.xticks(self.summer_season.list_offset_day_intervals, self.summer_season.list_day_names, rotation=45)
+        plt.xlabel("Month")
+        plt.title("Summer, Winter, and Cooling Data (" + self.summer_season.list_month_names[0] + " - " + self.summer_season.list_month_names[-1] +  ") Using Average Winter Days - " + str(self.summer_season.year.year + 2008))
+        plt.legend(["Summer", "Winter" , "Cooling"])
+        return
+    
+    def plot_energy_use(self, figure_number: int):
+        plt.figure(figure_number)
+        plt.plot(self.summer_energy_usage[self.summer_season.year.year], color = "r")
+        plt.plot(self.winter_energy_usage[self.summer_season.year.year], color = "b")
+        plt.plot(self.cooling_energy_simple[self.summer_season.year.year], color = "g")
+        plt.ylim(-1000,7000)
+        plt.ylabel("Energy Use (kWh)")
+        plt.xticks(self.summer_season.list_offset_day_intervals, self.summer_season.list_day_names, rotation=45)
+        plt.xlabel("Month")
+        plt.title("Summer, Winter, and Cooling Data (" + self.summer_season.list_month_names[0] + " - " + self.summer_season.list_month_names[-1] +  ") - " + str(self.summer_season.year.year + 2008))
+        plt.legend(["Summer", "Winter" , "Cooling"])
+        return
+    
+    def plot_test(self, figure_number: int):
+        plt.figure(figure_number)
+        plt.plot(self.winter_day_of_week_seperated_interval_average_data)
+        plt.ylim(-1000,7000)
+        plt.ylabel("Energy Use (kWh)")
+        plt.xlabel("Month")
+        plt.title("Winter Day of the week interval average data")
+        return 
+    def plot_test_2(self, figure_number: int):
+        plt.figure(figure_number)
+        plt.plot(self.winter_day_of_the_week_average_energy_usage[0], color = "b")
+        plt.ylim(-1000,7000)
+        plt.ylabel("Energy Use (kWh)")
+        plt.xlabel("Month")
+        plt.title("Winter Day of the week average energy usage")
+        return

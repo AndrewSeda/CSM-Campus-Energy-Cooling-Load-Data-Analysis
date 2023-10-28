@@ -11,6 +11,8 @@ from epwFiles import*
 from classes import*
 import os
 
+OUTPUT_PATH = "D:\Work\Research\Research Fall 2022\Output_Data\\"
+
 
 #Days in each month:
     # Jan - 31
@@ -236,7 +238,6 @@ def interval_average(list_season_energy, year_selected) -> list:
             season_day_sum += list_season_energy[year_selected][k+i]
         season_day_average = season_day_sum/((len(list_season_energy[year_selected])-1)/INTERVALS_PER_DAY)
         list_interval_average_per_day.append(season_day_average)
-    #print(len(list_interval_average_per_day))
     return list_interval_average_per_day
 
 def interval_average_dataset(list_season_energy, year_selected) -> list:
@@ -277,11 +278,10 @@ def get_use_presets() -> bool:
     bool_valid = False
     while(bool_valid == False):
         choice = int(input("Would You Like to Use Custom or Preset Settings? \n [1] = Custom \n [2] = Preset \n Input: ")) - 1
-        if(choice == 1 or choice == 0):
+        if(choice == 2 or choice == 1):
             bool_valid = True
         else:
             print("Invalid input")
-    
     return bool(choice)
 
 def get_input_year() -> int:

@@ -213,6 +213,18 @@ plt.xlabel("Month")
 plt.title("Summer, Winter, and Cooling Data (July-Aug) Using Average Winter Days - " + str(year_selected+2008))
 plt.legend(["Summer", "Winter" , "Cooling"])
 
+figure_number += 1
+energy_Aug_to_Sept.plot_energy_use_standard_winter(figure_number)
+
+figure_number += 1
+energy_Aug_to_Sept.plot_energy_use(figure_number)
+
+figure_number += 1
+energy_Aug_to_Sept.plot_test(figure_number)
+
+figure_number += 1
+energy_Aug_to_Sept.plot_test_2(figure_number)
+
 writer_senior_design_data = pd.ExcelWriter(OUTPUT_PATH + '2019_Summer_Cooling_Load.xlsx')
 list_combined_day_of_the_week_data = [list_summer_day_of_the_week_data[year_selected],list_season_winter_standard_day_of_the_week_data[year_selected],list_cooling_day_of_the_week_data[year_selected]]
 df_combined_day_of_the_week_data = pd.DataFrame(list_combined_day_of_the_week_data).transpose()
