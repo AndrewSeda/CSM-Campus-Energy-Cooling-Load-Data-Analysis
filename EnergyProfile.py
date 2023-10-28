@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from coolingLoadFunctions import interval_average
 
+OUTPUT_PATH = "D:\Work\Research\Research Fall 2022\Output_Data\\"
+
 class EnergyProfile:
     def __init__(self) -> None:
         pass
@@ -796,19 +798,39 @@ class EnergyProfile:
         plt.legend(["Summer", "Winter" , "Cooling"])
         return
     
-    def plot_test(self, figure_number: int):
-        plt.figure(figure_number)
-        plt.plot(self.winter_day_of_week_seperated_interval_average_data)
-        plt.ylim(-1000,7000)
-        plt.ylabel("Energy Use (kWh)")
-        plt.xlabel("Month")
-        plt.title("Winter Day of the week interval average data")
-        return 
-    def plot_test_2(self, figure_number: int):
-        plt.figure(figure_number)
-        plt.plot(self.winter_day_of_the_week_average_energy_usage[0], color = "b")
-        plt.ylim(-1000,7000)
-        plt.ylabel("Energy Use (kWh)")
-        plt.xlabel("Month")
-        plt.title("Winter Day of the week average energy usage")
-        return
+    def write_data_to_excel(self):
+        df_winter_day_seperated_data = pd.DataFrame(self.winter_day_of_week_seperated_interval_average_data).transpose()
+        df_winter_day_seperated_data.columns = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+
+
+        df_interval_average_data = pd.DataFrame([self.summer_interval_average_energy_usage, self.winter_interval_average_energy_usage, self.cooling_interval_average]).transpose()
+        df_week_interval_average_data = pd.DataFrame([self.summer_weekend_average_energy_usage, self.winter_weekend_average_energy_usage, self.summer_weekday_average_energy_usage, self.winter_weekday_average_energy_usage, self.weekend_cooling_interval_average, self.weekday_cooling_interval_average]).transpose()
+
+        column_names = ["2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "Average", "Weekday", "Weekend"]
+
+        df_compiled_data = pd.DataFrame(self.compiled_energy).transpose()
+        df_compiled_data.columns = ["Summer", "Winter", "Cooling"]
+        df_winter_data = pd.DataFrame(self.winter_energy_usage).transpose()
+        df_winter_data.columns = column_names
+        df_summer_data = pd.DataFrame(self.summer_energy_usage).transpose()
+        df_summer_data.columns = column_names
+        df_cooling_data = pd.DataFrame(self.cooling_energy_simple).transpose()
+        df_cooling_data.columns = column_names
+        df_week_interval_average_data.columns = ["Summer Weekend", "Winter Weekend", "Summer Weekday", "Winter Weekday", "Cooling Weekend", "Cooling Weekday"]
+
+
+
+
+        # Writes all data to a new excel file
+        writer_new = pd.ExcelWriter(OUTPUT_PATH + str(2008 + self.summer_season.year.year) + '_Cooling_Load(' + self.summer_season.list_month_names[0] + '-' + self.summer_season.list_month_names[-1] +   ').xlsx')
+        self.df.to_excel(writer_new, sheet_name= "All Data")
+        df_interval_average_data.to_excel(writer_new, sheet_name = "Interval Average Data")
+        df_week_interval_average_data.to_excel(writer_new, sheet_name = "Interval Average Week Data")
+        df_compiled_data.to_excel(writer_new, sheet_name = "Compiled Data")
+        df_winter_data.to_excel(writer_new, sheet_name = "Winter Data")
+        df_summer_data.to_excel(writer_new, sheet_name = "Summer Data")
+        df_cooling_data.to_excel(writer_new, sheet_name = "Cooling Data")
+        df_winter_day_seperated_data.to_excel(writer_new, sheet_name = "Winter Day Seperated Data")
+        writer_new.close()
+        

@@ -54,6 +54,7 @@ Analyze Data for the Desired Summer Season and a Standard Winter Season
 
 season_winter_standard = Season([0,2,0,0],False, Year(year_selected + 2008)) # Creates a standard for winter using Jan 1 - Mar 1
 season_summer = Season(date_range, bool_exclude_winter_break, Year(year_selected + 2008)) # Creates a Summer Season based on preset or custom inputs
+energy_summer = EnergyProfile.EnergyProfile(season_summer, season_winter_standard, df)
 
 list_summer_energy_usage = create_season_energy(season_summer, df)
 list_season_winter_standard_energy = create_season_energy(season_winter_standard, df) # Jan 1 - Mar 1 from 2008 to 2019
@@ -67,163 +68,26 @@ season_Dec_to_Jan = Season([11,0,0,0], False, Year(year_selected + 2008))
 energy_Jun_to_July = EnergyProfile.EnergyProfile(season_Jun_to_July, season_Dec_to_Jan, df)
 energy_Aug_to_Sept = EnergyProfile.EnergyProfile(season_Aug_to_Sept, season_Dec_to_Jan, df)
 
-'''
-Compare Two Summer Seasons Energy Usage
-
-Can be refactored into a method or deleted
-
-# Need to convert. Year() does not work when average is selected for get_input_year
-
-season_summer_Jun_to_July = Season([6,7,15,15], True, Year(year_selected + 2008))
-season_summer_Aug_to_Sept = Season([8,9,19,20], True, Year(year_selected + 2008))
-season_winter_Dec_to_Jan = Season([11,0,0,0], False, Year(year_selected + 2008)) # Creates a winter season from December 1st to January 1st
-
-list_summer_energy_usage_Jun_to_July = create_season_energy(season_summer_Jun_to_July, df) # June 15 - July 15 from 2008 to 2019
-list_summer_energy_usage_Aug_to_Sept = create_season_energy(season_summer_Aug_to_Sept, df) #Aug 19 - Sept 20 from 2008 to 2019
-list_winter_energy_usage_Dec_to_Jan = create_season_energy(season_winter_Dec_to_Jan, df) # December 1 - Jan 1 from 2008 to 2019
-
-# Simple and innaccurate method of generating a cooling load
-list_cooling_energy_Jun_to_July = get_all_cooling(list_summer_energy_usage_Jun_to_July, list_winter_energy_usage_Dec_to_Jan)
-list_cooling_energy_Aug_to_Sept = get_all_cooling(list_summer_energy_usage_Aug_to_Sept, list_winter_energy_usage_Dec_to_Jan)
-
-winter_weekend_dataset_Dec_to_Jan = interval_average_dataset(list_winter_energy_usage_Dec_to_Jan, 14)
-winter_weekday_dataset_Dec_to_Jan = interval_average_dataset(list_winter_energy_usage_Dec_to_Jan, 13)
-list_summer_weekend_dataset_Jun_to_July_Aug_to_Sept = interval_average_dataset(list_summer_energy_usage_Aug_to_Sept, 14)
-list_summer_weekday_dataset_Aug_to_Sept = interval_average_dataset(list_summer_energy_usage_Aug_to_Sept, 13)
-list_cooling_weekend_dataset_Jun_to_July = interval_average_dataset(list_cooling_energy_Jun_to_July, 14)
-list_cooling_weekday_dataset_Jun_to_July = interval_average_dataset(list_cooling_energy_Jun_to_July, 13)
-list_cooling_weekend_dataset_Aug_to_Sept = interval_average_dataset(list_cooling_energy_Aug_to_Sept, 14)
-list_cooling_weekday_dataset_Aug_to_Sept = interval_average_dataset(list_cooling_energy_Aug_to_Sept, 13)
-
-list_summer_weekend_dataset_Jun_to_July = interval_average_dataset(list_summer_energy_usage_Jun_to_July, 14)
-
-list_summer_interval_average_Jun_to_July, list_summer_weekday_average_Jun_to_July,list_summer_weekend_average_Jun_to_July = season_daily_averages(list_summer_energy_usage_Jun_to_July, year_selected)
-list_summer_interval_average_Aug_to_Sept, list_summer_weekday_average_Aug_to_Sept,list_summer_weekend_average_Aug_to_Sept = season_daily_averages(list_summer_energy_usage_Aug_to_Sept, year_selected)
-
-df_summer_weekend = pd.DataFrame(list_summer_weekend_dataset_Jun_to_July)
-df_winter_weekend = pd.DataFrame(winter_weekend_dataset_Dec_to_Jan)
-
-list_winter_interval_average_Dec_to_Jan, list_winter_weekday_average_Dec_to_Jan,list_winter_weekend_average_Dec_to_Jan = season_daily_averages(list_winter_energy_usage_Dec_to_Jan, year_selected)
-
-list_compiled_energy__Jun_to_July = [list_summer_energy_usage_Jun_to_July[year_selected],list_winter_energy_usage_Dec_to_Jan[year_selected],list_cooling_energy_Jun_to_July[year_selected]]
-
-list_cooling_interval_average_Jun_to_July = get_cooling_day(list_summer_interval_average_Jun_to_July, list_winter_interval_average_Dec_to_Jan)
-
-list_weekend_cooling_data_Jun_to_July = get_cooling_day(list_summer_weekend_average_Jun_to_July, list_winter_weekend_average_Dec_to_Jan)
-list_weekday_cooling_data_Jun_to_July = get_cooling_day(list_summer_weekday_average_Jun_to_July, list_winter_weekday_average_Dec_to_Jan)
-##list_weekend_cooling_data_Jun_to_Julyset = interval_average_dataset(list_weekday_cooling_data_Jun_to_July, 14)
-list_weekend_cooling_data_Aug_to_Sept = get_cooling_day(list_summer_weekend_average_Aug_to_Sept, list_winter_weekend_average_Dec_to_Jan)
-list_weekday_cooling_data_Aug_to_Sept = get_cooling_day(list_summer_weekday_average_Aug_to_Sept, list_winter_weekday_average_Dec_to_Jan)
-
-
-list_winter_day_of_the_week_average_data_Dec_to_Jan = season_day_of_the_week_averages(list_winter_energy_usage_Dec_to_Jan[11], False, year_selected)
-
-# Generate a list containing the average energy use at each time of day (in 15 min intervals) for each day of the week
-list_winter_day_of_week_seperated_interval_average_data_Dec_to_Jan = create_day_of_the_week_seperated_interval_average_data(list_winter_day_of_the_week_average_data_Dec_to_Jan)
-
-list_cooling_day_of_the_week_data_Aug_to_Sept, list_winter_day_of_the_week_data_Aug_to_Sept, list_summer_day_of_the_week_data_Aug_to_Sept = create_cooling_energy(season_summer_Aug_to_Sept, df, list_winter_day_of_week_seperated_interval_average_data_Dec_to_Jan)
-list_cooling_season_energy_typical_winter_intervals_Aug_to_Sept = create_cooling_data_by_interval(list_summer_energy_usage_Aug_to_Sept, 1, list_winter_day_of_week_seperated_interval_average_data_Dec_to_Jan)
-
-
-list_cooling_season_energy_average_winter_day = []
-for interval in range(0,len(list_summer_energy_usage_Aug_to_Sept[11])-1):    
-        daily_interval= interval % len(list_winter_interval_average_Dec_to_Jan)
-        list_cooling_season_energy_average_winter_day.append(list_summer_energy_usage_Aug_to_Sept[11][interval] - list_winter_interval_average_Dec_to_Jan[daily_interval])
-'''
-
-df_winter_day_seperated_data = pd.DataFrame(energy_Aug_to_Sept.winter_day_of_week_seperated_interval_average_data).transpose()
-df_winter_day_seperated_data.columns = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-
-
-
-df_interval_average_data = pd.DataFrame([energy_Jun_to_July.summer_interval_average_energy_usage, energy_Jun_to_July.winter_interval_average_energy_usage, energy_Jun_to_July.cooling_interval_average]).transpose()
-df_week_interval_average_data = pd.DataFrame([energy_Jun_to_July.summer_weekend_average_energy_usage, energy_Jun_to_July.winter_weekend_average_energy_usage, energy_Jun_to_July.summer_weekday_average_energy_usage, energy_Jun_to_July.winter_weekday_average_energy_usage, energy_Jun_to_July.cooling_weekend_energy_usage, energy_Jun_to_July.cooling_weekday_energy_usage]).transpose()
-df_week_interval_average_data_2 = pd.DataFrame([energy_Aug_to_Sept.summer_weekend_average_energy_usage, energy_Aug_to_Sept.winter_weekend_average_energy_usage, energy_Aug_to_Sept.summer_weekday_average_energy_usage, energy_Aug_to_Sept.winter_weekday_average_energy_usage, energy_Aug_to_Sept.cooling_weekend_energy_usage, energy_Aug_to_Sept.cooling_weekday_energy_usage]).transpose()
-
-column_names = ["2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "Average", "Weekday", "Weekend"]
-
-df_compiled_data = pd.DataFrame(energy_Jun_to_July.compiled_energy).transpose()
-df_compiled_data.columns = ["Summer", "Winter", "Cooling"]
-df_winter_data = pd.DataFrame(energy_Jun_to_July.winter_energy_usage).transpose()
-df_winter_data.columns = column_names
-df_summer_data = pd.DataFrame(energy_Jun_to_July.summer_energy_usage).transpose()
-df_summer_data.columns = column_names
-df_cooling_data = pd.DataFrame(energy_Jun_to_July.cooling_energy_simple).transpose()
-df_cooling_data.columns = column_names
-df_week_interval_average_data.columns = ["Summer Weekend", "Winter Weekend", "Summer Weekday", "Winter Weekday", "Cooling Weekend", "Cooling Weekday"]
-df_week_interval_average_data_2.columns = ["Summer Weekend", "Winter Weekend", "Summer Weekday", "Winter Weekday", "Cooling Weekend", "Cooling Weekday"]
+energy_summer.write_data_to_excel()
 
 
 
 
-
-# Writes all data to a new excel file
-writer_new = pd.ExcelWriter(OUTPUT_PATH + 'coolingLoadNew.xlsx')
-df.to_excel(writer_new, sheet_name= "All Data")
-df_interval_average_data.to_excel(writer_new, sheet_name = "Interval Average Data")
-df_week_interval_average_data.to_excel(writer_new, sheet_name = "Interval Average Week Data")
-df_compiled_data.to_excel(writer_new, sheet_name = "Compiled Data")
-df_winter_data.to_excel(writer_new, sheet_name = "Winter Data")
-df_summer_data.to_excel(writer_new, sheet_name = "Summer Data")
-df_cooling_data.to_excel(writer_new, sheet_name = "Cooling Data")
-df_winter_day_seperated_data.to_excel(writer_new, sheet_name = "Winter Day Seperated Data")
-writer_new.save()
-close()
-
-
-
-
-
-hour_tick_interval = []
-hour_tick = []
-b = 1
-# Generates an hour count which corresponds to each time interval
-for i in range(0,len(df_interval_average_data[2])):
-    if(i%4 == 0):
-        hour_tick_interval.append(i)
-        hour_tick.append(b)
-        b +=1
 
 #compareMonthRanges.main(df, year_selected, hour_tick, hour_tick_interval)
 figure_number = 0
 
-plot_continuous_average_electricity_load(figure_number, df_interval_average_data)
 
 
 
-figure_number+=3
-
-combined_day_names_1 = []
-for i in range(0,len(energy_Jun_to_July.summer_season.list_day_names)):
-    combined_day_names_1.append(energy_Jun_to_July.summer_season.list_day_names[i] + ' | ' + energy_Jun_to_July.winter_season.list_day_names[i])
-
-combined_day_names_2 = []
-for i in range(0,len(energy_Aug_to_Sept.summer_season.list_day_names)):
-    combined_day_names_2.append(energy_Aug_to_Sept.summer_season.list_day_names[i] + ' | ' + energy_Aug_to_Sept.winter_season.list_day_names[i])
-
-
-plt.figure(figure_number)
-plt.plot(list_summer_day_of_the_week_data[year_selected], color = "r")
-plt.plot(list_season_winter_standard_day_of_the_week_data[year_selected], color = "b")
-plt.plot(list_cooling_day_of_the_week_data[year_selected], color = "g")
-plt.ylim(-1000,7000)
-plt.ylabel("Energy Use (kWh)")
-plt.xticks(season_summer.list_offset_day_intervals, season_summer.list_day_names, rotation=45)
-plt.xlabel("Month")
-plt.title("Summer, Winter, and Cooling Data (July-Aug) Using Average Winter Days - " + str(year_selected+2008))
-plt.legend(["Summer", "Winter" , "Cooling"])
+figure_number += 1
+energy_summer.plot_energy_use_standard_winter(figure_number)
 
 figure_number += 1
 energy_Aug_to_Sept.plot_energy_use_standard_winter(figure_number)
 
 figure_number += 1
 energy_Aug_to_Sept.plot_energy_use(figure_number)
-
-figure_number += 1
-energy_Aug_to_Sept.plot_test(figure_number)
-
-figure_number += 1
-energy_Aug_to_Sept.plot_test_2(figure_number)
 
 writer_senior_design_data = pd.ExcelWriter(OUTPUT_PATH + '2019_Summer_Cooling_Load.xlsx')
 list_combined_day_of_the_week_data = [list_summer_day_of_the_week_data[year_selected],list_season_winter_standard_day_of_the_week_data[year_selected],list_cooling_day_of_the_week_data[year_selected]]
