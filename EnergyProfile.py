@@ -224,15 +224,15 @@ class EnergyProfile:
                 # If it is not part of the break
                 else:
                     
-                    list_season_row.append(df.at[j,cols[i]] - list_winter_day_of_week_seperated_interval_average_data[day, j%95]) 
-                    list_winter_row.append(list_winter_day_of_week_seperated_interval_average_data[day][j%95])
+                    list_season_row.append(df.at[j,cols[i]] - list_winter_day_of_week_seperated_interval_average_data[day, j%96]) 
+                    list_winter_row.append(list_winter_day_of_week_seperated_interval_average_data[day][j%96])
             for j in range(0, list_season_range[1]):
                 if( bool_exclude_time == True and j < time_to_exclude[1]):
                     list_season_row.append(list_season_row[j-96])
                     continue
                 else:
-                    list_season_row.append(df.at[j,cols[i]]- list_winter_day_of_week_seperated_interval_average_data[day][ j%95])
-                    list_winter_row.append(list_winter_day_of_week_seperated_interval_average_data[day][ j%95])
+                    list_season_row.append(df.at[j,cols[i]]- list_winter_day_of_week_seperated_interval_average_data[day][ j%96])
+                    list_winter_row.append(list_winter_day_of_week_seperated_interval_average_data[day][ j%96])
                     
         else:
             for k in range(list_season_range[0],list_season_range[1]):
@@ -255,8 +255,8 @@ class EnergyProfile:
                     day = 3
                 # k%96 is the interval in the day
                 # day is the day of the week to get data from
-                list_season_row.append(df.at[k, cols[i]] - list_winter_day_of_week_seperated_interval_average_data[day][k%95]) 
-                list_winter_row.append(list_winter_day_of_week_seperated_interval_average_data[day][k%95])
+                list_season_row.append(df.at[k, cols[i]] - list_winter_day_of_week_seperated_interval_average_data[day][k%96]) 
+                list_winter_row.append(list_winter_day_of_week_seperated_interval_average_data[day][k%96])
                 list_summer_row.append(df.at[k, cols[i]])
         return list_season_row,  list_winter_row, list_summer_row
     def season_averages(self, list_season_energy: list) -> list:
@@ -775,7 +775,11 @@ class EnergyProfile:
         self.cooling_day_of_the_week_data = list_cooling_energy
         self.winter_day_of_the_week_data = list_winter_energy
         self.summer_day_of_the_week_data = list_summer_energy
+        print("Cooling: " + str(len(list_cooling_energy[self.summer_season.year.year])))
+        print("Winter: " + str(len(list_winter_energy[self.summer_season.year.year])))
+        print("Summer: " + str(len(list_summer_energy[self.summer_season.year.year])))
         return 
+    
     def plot_energy_use_standard_winter(self, figure_number: int):
         plt.figure(figure_number)
         plt.plot(self.summer_day_of_the_week_data[self.summer_season.year.year], color = "r")
