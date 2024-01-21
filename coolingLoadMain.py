@@ -1,14 +1,9 @@
-from cmath import nan, nanj
-from fileinput import close
-from statistics import mean
 from tkinter import Y
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.integrate import trapezoid, simpson
 from coolingLoadFunctions import*
 from epwFiles import*
 from graph import*
-from statistics import stdev
 import EnergyProfile
 
 
@@ -118,9 +113,6 @@ energy_Aug_to_Sept.plot_energy_use(figure_number)
 
 figure_number += 1
 energy_summer.plot_winter_day_of_the_week_seperated_data(figure_number)
-
-figure_number += 1
-energy_summer.plot_overlayed(figure_number)
 
 figure_number += 1
 energy_summer.plot_average_energy_use_through_day(figure_number)
