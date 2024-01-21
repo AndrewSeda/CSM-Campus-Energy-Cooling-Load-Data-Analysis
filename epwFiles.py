@@ -3,6 +3,8 @@ import pandas as pd
 from coolingLoadFunctions import*
 import os
 
+OUTPUT_PATH = "D:\Work\Research\Research Fall 2022\Output_Data\\"
+
 def process_epw_files():
     #File location: D:\Work\Research\Research Fall 2022\Modified\
     #Change file location to access epw files
@@ -10,7 +12,8 @@ def process_epw_files():
     df_epw_files = {}
     bool_split_tab = False
     # Used To initialize pandas to write the the same file
-    writer = pd.ExcelWriter('epwTesting.xlsx')
+    
+    writer = pd.ExcelWriter(OUTPUT_PATH + 'epwTesting.xlsx')
     # Creates dataframes out of all of the weather files
     # Writes dataframes to excel sheets
     for i in range (13,20):
@@ -23,10 +26,10 @@ def process_epw_files():
             bool_split_tab = False
         df_epw_files[df_name] = Create_df_weather(file_name, bool_split_tab)
         df_epw_files[df_name].to_excel(writer, sheet_name= '20' + str(i))
-    writer.save()
-    close()   
+    writer.save() 
     # Finishes writing files to excel sheet
     # All of the weather files are viewable in an excel workbook named epwTesting.xlsx
+    return df_epw_files
 
 def Create_df_weather(fileName, splitTab):
 

@@ -1,6 +1,4 @@
 
-import pandas as pd
-
 #Returns the interval for the first day of summer assuming 15 min intervals
 #Parameters:
 #Month
@@ -97,12 +95,12 @@ class Season:
                 # If it is the last month, need to iterate until the designated end date
                 elif int_month == self.int_last_month:
                     for day in range(0,self.int_last_day):
-                        name_set.append(str_month + "/" + str(day))
+                        name_set.append(str_month + "/" + str(day+1))
                         interval_set.append(int_day_interval)
                         int_day_interval = int_day_interval + INTERVALS_PER_DAY
                 else:
                     for day in range(0,int_days_in_month):
-                        name_set.append(str_month + "/" + str(day))
+                        name_set.append(str_month + "/" + str(day+1))
                         interval_set.append(int_day_interval)
                         int_day_interval = int_day_interval + INTERVALS_PER_DAY
             # Create a new list to store the list of intervals shifted to start at zero
@@ -119,17 +117,17 @@ class Season:
                 int_days_in_month = self.year.month_days[int_month]
                 if int_month == self.int_first_month:
                     for day in range(self.int_first_day,int_days_in_month):
-                        name_set.append(str_month + "/" + str(day))
+                        name_set.append(str_month + "/" + str(day+1))
                         interval_set.append(int_day_interval)
                         int_day_interval = int_day_interval + INTERVALS_PER_DAY
                 elif int_month == self.int_last_month:
                     for day in range(0,self.int_last_day):
-                        name_set.append(str_month + "/" + str(day))
+                        name_set.append(str_month + "/" + str(day+1))
                         interval_set.append(int_day_interval)
                         int_day_interval = int_day_interval + INTERVALS_PER_DAY
                 else:
                     for day in range(0,int_days_in_month):
-                        name_set.append(str_month + "/" + str(day))
+                        name_set.append(str_month + "/" + str(day+1))
                         interval_set.append(int_day_interval)
                         int_day_interval = int_day_interval + INTERVALS_PER_DAY
 
@@ -144,19 +142,19 @@ class Season:
                 int_days_in_month = self.year.month_days[int_month]
                 if int_month == self.int_first_month:
                     for day in range(self.int_first_day,int_days_in_month):
-                        name_set.append(str_month + "/" + str(day))
+                        name_set.append(str_month + "/" + str(day+1))
                         interval_set.append(int_day_interval) # No longer needed?
                         list_offset_intervals.append(int_day_interval) # Since the for loop begins at the beginning of the year, offset = 0
                         int_day_interval = int_day_interval + INTERVALS_PER_DAY
                 elif int_month == self.int_last_month:
                     for day in range(0,self.int_last_day):
-                        name_set.append(str_month + "/" + str(day))
+                        name_set.append(str_month + "/" + str(day+1))
                         interval_set.append(int_day_interval) # No longer needed?
                         list_offset_intervals.append(int_day_interval)
                         int_day_interval = int_day_interval + INTERVALS_PER_DAY
                 else:
                     for day in range(0,int_days_in_month):
-                        name_set.append(str_month + "/" + str(day))
+                        name_set.append(str_month + "/" + str(day+1))
                         interval_set.append(int_day_interval) # No longer needed?
                         list_offset_intervals.append(int_day_interval)
                         int_day_interval = int_day_interval + INTERVALS_PER_DAY

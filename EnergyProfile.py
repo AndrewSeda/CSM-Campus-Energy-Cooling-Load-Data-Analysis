@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from coolingLoadFunctions import interval_average
+from scipy.integrate import trapezoid, simpson
+
 
 OUTPUT_PATH = "D:\Work\Research\Research Fall 2022\Output_Data\\"
 
@@ -239,22 +241,23 @@ class EnergyProfile:
                 #list_winter_day_of_week_seperated_interval_average_data[k%96]
                 
                 day = 0
-                if k%665 < 95:
-                    day = 4
-                elif k%665 < 95*2:
-                    day = 5
-                elif k%665 < 95*3:
-                    day = 6
-                elif k%665 < 95*4:
+                if k%672 < 95:
                     day = 0
-                elif k%665 < 95*5:
+                elif k%672 < 95*2:
                     day = 1
-                elif k%665 < 95*6:
+                elif k%672 < 95*3:
                     day = 2
-                else:
+                elif k%672 < 95*4:
                     day = 3
+                elif k%672 < 95*5:
+                    day = 4
+                elif k%672 < 95*6:
+                    day = 5
+                else:
+                    day = 6
                 # k%96 is the interval in the day
                 # day is the day of the week to get data from
+          
                 list_season_row.append(df.at[k, cols[i]] - list_winter_day_of_week_seperated_interval_average_data[day][k%96]) 
                 list_winter_row.append(list_winter_day_of_week_seperated_interval_average_data[day][k%96])
                 list_summer_row.append(df.at[k, cols[i]])
@@ -775,23 +778,27 @@ class EnergyProfile:
         self.cooling_day_of_the_week_data = list_cooling_energy
         self.winter_day_of_the_week_data = list_winter_energy
         self.summer_day_of_the_week_data = list_summer_energy
-        print("Cooling: " + str(len(list_cooling_energy[self.summer_season.year.year])))
-        print("Winter: " + str(len(list_winter_energy[self.summer_season.year.year])))
-        print("Summer: " + str(len(list_summer_energy[self.summer_season.year.year])))
         return 
     
     def plot_energy_use_standard_winter(self, figure_number: int):
+        area = simpson(self.cooling_day_of_the_week_data[self.summer_season.year.year])
+        area = str(int(area)/4000) # Neeed to convert to MWh since the intervals are in 15 minute increments and power in kW
         plt.figure(figure_number)
         plt.plot(self.summer_day_of_the_week_data[self.summer_season.year.year], color = "r")
         plt.plot(self.winter_day_of_the_week_data[self.summer_season.year.year], color = "b")
         plt.plot(self.cooling_day_of_the_week_data[self.summer_season.year.year], color = "g")
         plt.ylim(-1000,7000)
-        plt.ylabel("Energy Use (kWh)")
+        plt.ylabel("Energy Use (kW)")
         plt.xticks(self.summer_season.list_offset_day_intervals, self.summer_season.list_day_names, rotation=45)
         plt.xlabel("Month")
-        plt.title("Summer, Winter, and Cooling Data (" + self.summer_season.list_month_names[0] + " - " + self.summer_season.list_month_names[-1] +  ") Using Average Winter Days - " + str(self.summer_season.year.year + 2008))
+        plt.title("Summer, Winter, and Cooling Data (" + self.summer_season.list_month_names[0] + " - " + self.summer_season.list_month_names[-1] +  ") Using Average Winter Days - " + str(self.summer_season.year.year + 2008) + " | Energy Use: " + area + " MWh")
         plt.legend(["Summer", "Winter" , "Cooling"])
         return
+    
+    def plot_winter_energy_use_standard(self, figure_number: int):
+        plt.figure(figure_number)
+        plt.plot(self.winter_day_of_the_week_data[self.summer_season.year.year], color = "b")
+        plt.ylim(-1000,7000)
     
     def plot_energy_use(self, figure_number: int):
         plt.figure(figure_number)
@@ -799,7 +806,7 @@ class EnergyProfile:
         plt.plot(self.winter_energy_usage[self.summer_season.year.year], color = "b")
         plt.plot(self.cooling_energy_simple[self.summer_season.year.year], color = "g")
         plt.ylim(-1000,7000)
-        plt.ylabel("Energy Use (kWh)")
+        plt.ylabel("Energy Use (kW)")
         plt.xticks(self.summer_season.list_offset_day_intervals, self.summer_season.list_day_names, rotation=45)
         plt.xlabel("Month")
         plt.title("Summer, Winter, and Cooling Data (" + self.summer_season.list_month_names[0] + " - " + self.summer_season.list_month_names[-1] +  ") - " + str(self.summer_season.year.year + 2008))
@@ -816,7 +823,7 @@ class EnergyProfile:
         plt.plot(self.winter_day_of_week_seperated_interval_average_data[5], label = "Sat")
         plt.plot(self.winter_day_of_week_seperated_interval_average_data[6], label = "Sun")
         #plt.ylim(-3000,7000)
-        plt.ylabel("Energy Use (kWh)")
+        plt.ylabel("Energy Use (kW)")
         plt.xticks(self.hour_tick_interval, self.hour_tick, rotation=45)
         plt.xlabel("Time of Day (Hour)")
         plt.title("Winter Data Seperated by Day")
@@ -864,7 +871,7 @@ class EnergyProfile:
         plt.xticks(self.hour_tick_interval, self.hour_tick, rotation=45)
         plt.ylim(2500,5500)
         plt.xlabel("Time of Day (Hour)")
-        plt.ylabel("kWh")
+        plt.ylabel("kW")
         plt.legend()
     
     def plot_std_dev_through_day_weekend(self, figure_number):
@@ -885,7 +892,7 @@ class EnergyProfile:
         plt.fill_between(self.xCoords, self.df_week_interval_average_data["Winter Weekday"]-self.winter_weekend_energy_usage[-1],  self.df_week_interval_average_data["Winter Weekday"]+self.winter_weekend_energy_usage[-1], color='b', alpha=0.4)
         plt.fill_between(self.xCoords, self.df_week_interval_average_data["Cooling Weekday"]-self.cooling_weekend_energy_usage[-1],  self.df_week_interval_average_data["Cooling Weekday"]+self.cooling_weekend_energy_usage[-1], color='g', alpha=0.4)
 
-
+            
     def get_xcoords(self):
         self.xCoords = []
         for i in range(0,len(self.summer_weekend_average_energy_usage)):
